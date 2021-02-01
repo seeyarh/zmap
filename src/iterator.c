@@ -62,7 +62,8 @@ iterator_t *iterator_init(uint8_t num_threads, uint16_t shard,
 	uint64_t num_addrs = blocklist_count_allowed();
 	uint64_t group_min_size = num_addrs;
 	if (zconf.list_of_ips_filename) {
-		log_debug("send", "forcing max group size for compatibility with -I");
+		log_debug("send",
+			  "forcing max group size for compatibility with -I");
 		group_min_size = 0xFFFFFFFF;
 	}
 	iterator_t *it = xmalloc(sizeof(struct iterator));

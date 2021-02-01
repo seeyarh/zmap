@@ -41,8 +41,8 @@ void json_metadata(FILE *file)
 	char recv_end_time[STRTIME_LEN + 1];
 	assert(dstrftime(recv_end_time, STRTIME_LEN, "%Y-%m-%dT%H:%M:%S%z",
 			 zrecv.finish));
-	double hitrate =
-	    ((double)100 * zrecv.success_unique) / ((double)zsend.hosts_scanned);
+	double hitrate = ((double)100 * zrecv.success_unique) /
+			 ((double)zsend.hosts_scanned);
 
 	json_object *obj = json_object_new_object();
 
@@ -213,9 +213,8 @@ void json_metadata(FILE *file)
 		    json_object_new_string(zconf.probe_args));
 	}
 	if (zconf.probe_ttl) {
-		json_object_object_add(
-		    obj, "probe_ttl",
-		    json_object_new_int(zconf.probe_ttl));
+		json_object_object_add(obj, "probe_ttl",
+				       json_object_new_int(zconf.probe_ttl));
 	}
 	if (zconf.output_args) {
 		json_object_object_add(

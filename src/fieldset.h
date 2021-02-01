@@ -64,8 +64,8 @@ typedef struct fieldset {
 	field_t fields[MAX_FIELDS];
 	// only used for repeated.
 	int inner_type; // type of repeated element. e.g., FS_STRING
-	int type;       // REPEATED or FIELDSET
-	int free_;      // should elements be freed
+	int type;	// REPEATED or FIELDSET
+	int free_;	// should elements be freed
 } fieldset_t;
 
 // we pass a different fieldset to an output module than

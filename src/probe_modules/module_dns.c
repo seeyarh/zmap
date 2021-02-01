@@ -95,7 +95,7 @@ static int num_questions = 0;
  * with: dns_qtype (.h) qtype_strid_to_qtype (below) qtype_qtype_to_strid
  * (below, and setup_qtype_str_map())
  */
-const char *qtype_strs[] = {"A",  "NS",  "CNAME", "SOA",   "PTR",
+const char *qtype_strs[] = {"A",  "NS",	 "CNAME", "SOA",   "PTR",
 			    "MX", "TXT", "AAAA",  "RRSIG", "ALL"};
 const int qtype_strs_len = 10;
 
@@ -729,10 +729,9 @@ int dns_init_perthread(void *buf, macaddr_t *src, macaddr_t *gw,
 	return EXIT_SUCCESS;
 }
 
-int dns_make_packet(void *buf, size_t *buf_len,
-            ipaddr_n_t src_ip, ipaddr_n_t dst_ip, uint8_t ttl,
-			uint32_t *validation, int probe_num,
-		    UNUSED void *arg)
+int dns_make_packet(void *buf, size_t *buf_len, ipaddr_n_t src_ip,
+		    ipaddr_n_t dst_ip, uint8_t ttl, uint32_t *validation,
+		    int probe_num, UNUSED void *arg)
 {
 	struct ether_header *eth_header = (struct ether_header *)buf;
 	struct ip *ip_header = (struct ip *)(&eth_header[1]);

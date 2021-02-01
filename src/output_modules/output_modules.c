@@ -24,6 +24,10 @@ extern output_module_t module_csv_redis;
 extern output_module_t module_mongodb;
 #endif
 
+#ifdef ZMQ
+extern output_module_t module_zmq;
+#endif
+
 output_module_t *output_modules[] = {
     &module_csv_file, &module_json_file,
 #ifdef REDIS
@@ -32,7 +36,9 @@ output_module_t *output_modules[] = {
 #ifdef MONGODB
     &module_mongodb,
 #endif
-    // ADD YOUR MODULE HERE
+#ifdef ZMQ
+    &module_zmq,      &module_zmq,
+#endif
 };
 
 output_module_t *get_output_module_by_name(const char *name)

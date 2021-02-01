@@ -25,7 +25,7 @@ static inline unsigned short in_checksum(unsigned short *ip_pkt, int len)
 		sum += *ip_pkt++;
 	}
 	if (len % 2 == 1) {
-		sum += *((unsigned char *) ip_pkt);
+		sum += *((unsigned char *)ip_pkt);
 	}
 	sum = (sum >> 16) + (sum & 0xffff);
 	return (unsigned short)(~sum);
@@ -38,7 +38,7 @@ static inline unsigned short in_icmp_checksum(unsigned short *ip_pkt, int len)
 		sum += *ip_pkt++;
 	}
 	if (len % 2 == 1) {
-		sum += *((unsigned char *) ip_pkt);
+		sum += *((unsigned char *)ip_pkt);
 	}
 	sum = (sum >> 16) + (sum & 0xffff);
 	return (unsigned short)(~sum);

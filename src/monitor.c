@@ -116,23 +116,25 @@ static double min_d(double array[], int n)
 }
 
 // estimate time remaining time based on config and state
-double compute_remaining_time(double age, uint64_t packets_sent, uint64_t iterations)
+double compute_remaining_time(double age, uint64_t packets_sent,
+			      uint64_t iterations)
 {
 	if (!zsend.complete) {
-		double remaining[] = {INFINITY, INFINITY, INFINITY, INFINITY, INFINITY};
+		double remaining[] = {INFINITY, INFINITY, INFINITY, INFINITY,
+				      INFINITY};
 		if (zsend.list_of_ips_pbm) {
 			// Estimate progress using group iterations
-			double done = (double) iterations /
-					((uint64_t)0xFFFFFFFFU /
-					zconf.total_shards);
+			double done =
+			    (double)iterations /
+			    ((uint64_t)0xFFFFFFFFU / zconf.total_shards);
 			remaining[0] =
-				(1. - done) * (age / done) + zconf.cooldown_secs;
+			    (1. - done) * (age / done) + zconf.cooldown_secs;
 		}
 		if (zsend.max_targets) {
 			double done =
 			    (double)packets_sent /
-			    ((uint64_t)zsend.max_targets * zconf.packet_streams /
-			     zconf.total_shards);
+			    ((uint64_t)zsend.max_targets *
+			     zconf.packet_streams / zconf.total_shards);
 			remaining[1] =
 			    (1. - done) * (age / done) + zconf.cooldown_secs;
 		}
@@ -179,7 +181,8 @@ static void export_stats(int_status_t *intrnl, export_status_t *exp,
 	double age = cur_time - zsend.start; // time of entire scan
 	// time since the last time we updated
 	double delta = cur_time - intrnl->last_now;
-	double remaining_secs = compute_remaining_time(age, total_sent, total_iterations);
+	double remaining_secs =
+	    compute_remaining_time(age, total_sent, total_iterations);
 
 	// export amount of time the scan has been running
 	if (age < WARMUP_PERIOD) {

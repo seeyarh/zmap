@@ -393,6 +393,8 @@ int main(int argc, char *argv[])
 		log_debug("zmap", "no output module provided. will use csv.");
 		zconf.output_module = get_output_module_by_name("csv");
 	} else {
+		log_info("zmap", "getting output module %s",
+			 args.output_module_arg);
 		zconf.output_module =
 		    get_output_module_by_name(args.output_module_arg);
 		if (!zconf.output_module) {
@@ -797,7 +799,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
-	if(args.batch_given){
+	if (args.batch_given) {
 		zconf.batch = args.batch_arg;
 	}
 	if (args.max_targets_given) {
@@ -826,8 +828,11 @@ int main(int argc, char *argv[])
 	if (!zconf.total_allowed) {
 		log_fatal("zmap", "zero eligible addresses to scan");
 	}
-	if (zconf.list_of_ips_count > 0 && 0xFFFFFFFFU / zconf.list_of_ips_count > 100000) {
-		log_warn("zmap", "list of IPs is small compared to address space. Performance will suffer, consider using an allowlist instead");
+	if (zconf.list_of_ips_count > 0 &&
+	    0xFFFFFFFFU / zconf.list_of_ips_count > 100000) {
+		log_warn(
+		    "zmap",
+		    "list of IPs is small compared to address space. Performance will suffer, consider using an allowlist instead");
 	}
 	if (zconf.max_targets) {
 		zsend.max_targets = zconf.max_targets;

@@ -38,13 +38,13 @@ static udp_payload_template_t *udp_template = NULL;
 static const char *udp_send_msg_default = "GET / HTTP/1.1\r\nHost: www\r\n\r\n";
 
 const char *udp_unreach_strings[] = {
-    "network unreachable",      "host unreachable",
-    "protocol unreachable",     "port unreachable",
-    "fragments required",       "source route failed",
+    "network unreachable",	"host unreachable",
+    "protocol unreachable",	"port unreachable",
+    "fragments required",	"source route failed",
     "network unknown",		"host unknown",
-    "source host isolated",     "network admin. prohibited",
-    "host admin. prohibited",   "network unreachable TOS",
-    "host unreachable TOS",     "communication admin. prohibited",
+    "source host isolated",	"network admin. prohibited",
+    "host admin. prohibited",	"network unreachable TOS",
+    "host unreachable TOS",	"communication admin. prohibited",
     "host presdence violation", "precedence cutoff"};
 
 const char *udp_usage_error =
@@ -280,10 +280,9 @@ int udp_init_perthread(void *buf, macaddr_t *src, macaddr_t *gw,
 	return EXIT_SUCCESS;
 }
 
-int udp_make_packet(void *buf, UNUSED size_t *buf_len,
-            ipaddr_n_t src_ip, ipaddr_n_t dst_ip, uint8_t ttl,
-			uint32_t *validation, int probe_num,
-		    void *arg)
+int udp_make_packet(void *buf, UNUSED size_t *buf_len, ipaddr_n_t src_ip,
+		    ipaddr_n_t dst_ip, uint8_t ttl, uint32_t *validation,
+		    int probe_num, void *arg)
 {
 	struct ether_header *eth_header = (struct ether_header *)buf;
 	struct ip *ip_header = (struct ip *)(&eth_header[1]);

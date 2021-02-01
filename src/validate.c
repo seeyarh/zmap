@@ -26,7 +26,8 @@ void validate_init()
 	if (!random_bytes(key, AES_KEY_BYTES)) {
 		log_fatal("validate", "couldn't get random bytes");
 	}
-	if (rijndaelKeySetupEnc(aes_sched, key, AES_KEY_BYTES * 8) != AES_ROUNDS) {
+	if (rijndaelKeySetupEnc(aes_sched, key, AES_KEY_BYTES * 8) !=
+	    AES_ROUNDS) {
 		log_fatal("validate", "couldn't initialize AES key");
 	}
 	inited = 1;
