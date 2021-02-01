@@ -65,6 +65,7 @@ struct state_conf {
 	// number of sending threads
 	uint8_t senders;
 	uint8_t batch;
+	uint8_t sendmmsg_batch;
 	uint32_t pin_cores_len;
 	uint32_t *pin_cores;
 	// should use CLI provided randomization seed instead of generating

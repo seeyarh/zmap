@@ -72,6 +72,9 @@ option "shard"                  - "Set which shard this scan is (0 indexed)"
     typestr="n"
     optional int
     default="0"
+option "sendmmsg_batch"                  - "Set the number of packets to send per call to sendmmsg"
+    typestr="n"
+    optional int
 
 section "Network options"
 
