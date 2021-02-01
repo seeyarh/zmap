@@ -220,21 +220,23 @@ static inline ipaddr_n_t get_src_ip(ipaddr_n_t dst, int local_offset)
 int send_run(sock_t st, shard_t *s)
 {
 
-    // allocate memory for batches
-    int pkt_count = 0;
-    struct mmsghdr *msg_vec;
-    struct iovec *pkt_vec;
-    if (zconf.sendmmsg_batch > 0) {
-		log_debug("send", "allocating buffers for sendmmsg batch size of %d", zconf.sendmmsg_batch);
-        msg_vec = calloc(zconf.sendmmsg_batch, sizeof(struct mmsghdr));
-        pkt_vec = calloc(zconf.sendmmsg_batch, sizeof(struct iovec));
-        for(int i=0; i < zconf.sendmmsg_batch; i++) {
-            msg_vec[i].msg_hdr.msg_iov = &pkt_vec[i];
-            msg_vec[i].msg_hdr.msg_iovlen = 1;
-            uint8_t *pkt = calloc(MAX_PACKET_SIZE, 1);
-            msg_vec[i].msg_hdr.msg_iov->iov_base = pkt;
-        }
-    }
+	// allocate memory for batches
+	int pkt_count = 0;
+	struct mmsghdr *msg_vec;
+	struct iovec *pkt_vec;
+	if (zconf.sendmmsg_batch > 0) {
+		log_debug("send",
+			  "allocating buffers for sendmmsg batch size of %d",
+			  zconf.sendmmsg_batch);
+		msg_vec = calloc(zconf.sendmmsg_batch, sizeof(struct mmsghdr));
+		pkt_vec = calloc(zconf.sendmmsg_batch, sizeof(struct iovec));
+		for (int i = 0; i < zconf.sendmmsg_batch; i++) {
+			msg_vec[i].msg_hdr.msg_iov = &pkt_vec[i];
+			msg_vec[i].msg_hdr.msg_iovlen = 1;
+			uint8_t *pkt = calloc(MAX_PACKET_SIZE, 1);
+			msg_vec[i].msg_hdr.msg_iov->iov_base = pkt;
+		}
+	}
 
 	log_debug("send", "send thread started");
 	pthread_mutex_lock(&send_mutex);
@@ -366,22 +368,26 @@ int send_run(sock_t st, shard_t *s)
 
 		// Check if the program has otherwise completed and break out of the send loop.
 		if (zrecv.complete) {
-            if (zconf.sendmmsg_batch > 0) {
-                int rc = send_batch(st, msg_vec, pkt_count);
-                if (rc < 0) {
-                    log_fatal("send", "send_batch failed: %s", strerror(errno));
-                }
-            }
+			if (zconf.sendmmsg_batch > 0) {
+				int rc = send_batch(st, msg_vec, pkt_count);
+				if (rc < 0) {
+					log_fatal("send",
+						  "send_batch failed: %s",
+						  strerror(errno));
+				}
+			}
 			goto cleanup;
 		}
 		if (zconf.max_runtime &&
 		    zconf.max_runtime <= now() - zsend.start) {
-            if (zconf.sendmmsg_batch > 0) {
-                int rc = send_batch(st, msg_vec, pkt_count);
-                if (rc < 0) {
-                    log_fatal("send", "send_batch failed: %s", strerror(errno));
-                }
-            }
+			if (zconf.sendmmsg_batch > 0) {
+				int rc = send_batch(st, msg_vec, pkt_count);
+				if (rc < 0) {
+					log_fatal("send",
+						  "send_batch failed: %s",
+						  strerror(errno));
+				}
+			}
 			goto cleanup;
 		}
 
@@ -391,12 +397,16 @@ int send_run(sock_t st, shard_t *s)
 			// packet, regardless of batch size.
 			if (s->state.max_hosts &&
 			    s->state.hosts_scanned >= s->state.max_hosts) {
-                if (zconf.sendmmsg_batch > 0) {
-                    int rc = send_batch(st, msg_vec, pkt_count);
-                    if (rc < 0) {
-                        log_fatal("send", "send_batch failed: %s", strerror(errno));
-                    }
-                }
+				if (zconf.sendmmsg_batch > 0) {
+					int rc =
+					    send_batch(st, msg_vec, pkt_count);
+					if (rc < 0) {
+						log_fatal(
+						    "send",
+						    "send_batch failed: %s",
+						    strerror(errno));
+					}
+				}
 				log_debug(
 				    "send",
 				    "send thread %hhu finished (max targets of %u reached)",
@@ -405,12 +415,16 @@ int send_run(sock_t st, shard_t *s)
 			}
 			if (s->state.max_packets &&
 			    s->state.packets_sent >= s->state.max_packets) {
-                if (zconf.sendmmsg_batch > 0) {
-                    int rc = send_batch(st, msg_vec, pkt_count);
-                    if (rc < 0) {
-                        log_fatal("send", "send_batch failed: %s", strerror(errno));
-                    }
-                }
+				if (zconf.sendmmsg_batch > 0) {
+					int rc =
+					    send_batch(st, msg_vec, pkt_count);
+					if (rc < 0) {
+						log_fatal(
+						    "send",
+						    "send_batch failed: %s",
+						    strerror(errno));
+					}
+				}
 				log_debug(
 				    "send",
 				    "send thread %hhu finished (max packets of %u reached)",
@@ -418,12 +432,16 @@ int send_run(sock_t st, shard_t *s)
 				goto cleanup;
 			}
 			if (current_ip == ZMAP_SHARD_DONE) {
-                if (zconf.sendmmsg_batch > 0) {
-                    int rc = send_batch(st, msg_vec, pkt_count);
-                    if (rc < 0) {
-                        log_fatal("send", "send_batch failed: %s", strerror(errno));
-                    }
-                }
+				if (zconf.sendmmsg_batch > 0) {
+					int rc =
+					    send_batch(st, msg_vec, pkt_count);
+					if (rc < 0) {
+						log_fatal(
+						    "send",
+						    "send_batch failed: %s",
+						    strerror(errno));
+					}
+				}
 				log_debug(
 				    "send",
 				    "send thread %hhu finished, shard depleted",
@@ -464,46 +482,68 @@ int send_run(sock_t st, shard_t *s)
 						   sizeof(struct ether_header));
 					int any_sends_successful = 0;
 					for (int i = 0; i < attempts; ++i) {
-                        if (zconf.sendmmsg_batch > 0) {
-                            memcpy(msg_vec[pkt_count].msg_hdr.msg_iov->iov_base, contents, length);
-                            msg_vec[pkt_count].msg_hdr.msg_iov->iov_len = length;
-                            any_sends_successful = 1;
-                            pkt_count += 1;
-                            if (pkt_count == zconf.sendmmsg_batch) {
-                                int rc = send_batch(st, msg_vec, pkt_count);
-                                if (rc < 0) {
-                                    log_fatal("send", "send_batch failed: %s", strerror(errno));
-                                }
-                                pkt_count = 0;
-                            }
-                        } else {
-                            int rc = send_packet(
-                                st, contents, length, idx);
-                            if (rc < 0) {
-                                struct in_addr addr;
-                                addr.s_addr =
-                                    current_ip;
-                                char addr_str_buf
-                                    [INET_ADDRSTRLEN];
-                                const char *addr_str =
-                                    inet_ntop(
-                                    AF_INET, &addr,
-                                    addr_str_buf,
-                                    INET_ADDRSTRLEN);
-                                if (addr_str != NULL) {
-                                    log_debug(
-                                        "send",
-                                        "send_packet failed for %s. %s",
-                                        addr_str,
-                                        strerror(
-                                        errno));
-                                }
-                            } else {
-                                any_sends_successful =
-                                    1;
-                                break;
-                            }
-                        }
+						if (zconf.sendmmsg_batch > 0) {
+							memcpy(
+							    msg_vec[pkt_count]
+								.msg_hdr
+								.msg_iov
+								->iov_base,
+							    contents, length);
+							msg_vec[pkt_count]
+							    .msg_hdr.msg_iov
+							    ->iov_len = length;
+							any_sends_successful =
+							    1;
+							pkt_count += 1;
+							if (pkt_count ==
+							    zconf
+								.sendmmsg_batch) {
+								int rc =
+								    send_batch(
+									st,
+									msg_vec,
+									pkt_count);
+								if (rc < 0) {
+									log_fatal(
+									    "send",
+									    "send_batch failed: %s",
+									    strerror(
+										errno));
+								}
+								pkt_count = 0;
+							}
+						} else {
+							int rc = send_packet(
+							    st, contents,
+							    length, idx);
+							if (rc < 0) {
+								struct in_addr
+								    addr;
+								addr.s_addr =
+								    current_ip;
+								char addr_str_buf
+								    [INET_ADDRSTRLEN];
+								const char *addr_str =
+								    inet_ntop(
+									AF_INET,
+									&addr,
+									addr_str_buf,
+									INET_ADDRSTRLEN);
+								if (addr_str !=
+								    NULL) {
+									log_debug(
+									    "send",
+									    "send_packet failed for %s. %s",
+									    addr_str,
+									    strerror(
+										errno));
+								}
+							} else {
+								any_sends_successful =
+								    1;
+								break;
+							}
+						}
 					}
 					if (!any_sends_successful) {
 						s->state.packets_failed++;
@@ -526,12 +566,18 @@ int send_run(sock_t st, shard_t *s)
 						  current_ip)) {
 					current_ip = shard_get_next_ip(s);
 					if (current_ip == ZMAP_SHARD_DONE) {
-                        if (zconf.sendmmsg_batch > 0) {
-                            int rc = send_batch(st, msg_vec, pkt_count);
-                            if (rc < 0) {
-                                log_fatal("send", "send_batch failed: %s", strerror(errno));
-                            }
-                        }
+						if (zconf.sendmmsg_batch > 0) {
+							int rc = send_batch(
+							    st, msg_vec,
+							    pkt_count);
+							if (rc < 0) {
+								log_fatal(
+								    "send",
+								    "send_batch failed: %s",
+								    strerror(
+									errno));
+							}
+						}
 						log_debug(
 						    "send",
 						    "send thread %hhu shard finished in get_next_ip_loop depleted",
@@ -543,14 +589,15 @@ int send_run(sock_t st, shard_t *s)
 		}
 	}
 cleanup:
-    if (zconf.sendmmsg_batch > 0) {
-		log_debug("send", "free buffers for sendmmsg batch size of %d", zconf.sendmmsg_batch);
-        for(int i=0; i < zconf.sendmmsg_batch; i++) {
-            free(msg_vec[i].msg_hdr.msg_iov->iov_base);
-        }
-        free(msg_vec);
-        free(pkt_vec);
-    }
+	if (zconf.sendmmsg_batch > 0) {
+		log_debug("send", "free buffers for sendmmsg batch size of %d",
+			  zconf.sendmmsg_batch);
+		for (int i = 0; i < zconf.sendmmsg_batch; i++) {
+			free(msg_vec[i].msg_hdr.msg_iov->iov_base);
+		}
+		free(msg_vec);
+		free(pkt_vec);
+	}
 	s->cb(s->thread_id, s->arg);
 	if (zconf.dryrun) {
 		lock_file(stdout);

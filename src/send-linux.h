@@ -69,7 +69,7 @@ int send_packet(sock_t sock, void *buf, int len, UNUSED uint32_t idx)
 int send_batch(sock_t sock, struct mmsghdr *msg_vec, int msg_vlen)
 {
 
-    /*
+	/*
     int all_outstanding;
     ioctl(sock.sock, SIOCOUTQ, &all_outstanding);
     int outstanding_not_sent;
@@ -77,40 +77,43 @@ int send_batch(sock_t sock, struct mmsghdr *msg_vec, int msg_vlen)
     log_info("send", "sendmmsg() outstanding %d outstand not sent %d", all_outstanding, outstanding_not_sent);
     */
 
-    if(msg_vlen == 0)
-        return 1;
+	if (msg_vlen == 0)
+		return 1;
 
-    int cur_vlen = msg_vlen;
-    struct mmsghdr * cur_msg_vec = msg_vec;
-    int retval;
+	int cur_vlen = msg_vlen;
+	struct mmsghdr *cur_msg_vec = msg_vec;
+	int retval;
 
-    struct pollfd pfd;
-    pfd.fd = sock.sock;
-    pfd.events = POLLWRNORM;
-    pfd.revents = 0;
+	struct pollfd pfd;
+	pfd.fd = sock.sock;
+	pfd.events = POLLWRNORM;
+	pfd.revents = 0;
 
-    while(1) {
-        retval = sendmmsg(sock.sock, cur_msg_vec, cur_vlen, 0);
-        //log_info("send", "sendmmsg() debug %s %d %d %d", strerror(errno), errno, retval, cur_vlen);
-        if (retval <= 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR || errno == ENOBUFS) {
-                continue;
-            }
-            log_fatal("send", "sendmmsg() err %s %d %d", strerror(errno), errno, retval);
-        } else if (retval != cur_vlen) {
-            cur_msg_vec = &cur_msg_vec[retval];
-            cur_vlen -= retval;
-        } else if (retval == cur_vlen) {
-            break;
-        }
+	while (1) {
+		retval = sendmmsg(sock.sock, cur_msg_vec, cur_vlen, 0);
+		//log_info("send", "sendmmsg() debug %s %d %d %d", strerror(errno), errno, retval, cur_vlen);
+		if (retval <= 0) {
+			if (errno == EAGAIN || errno == EWOULDBLOCK ||
+			    errno == EINTR || errno == ENOBUFS) {
+				continue;
+			}
+			log_fatal("send", "sendmmsg() err %s %d %d",
+				  strerror(errno), errno, retval);
+		} else if (retval != cur_vlen) {
+			cur_msg_vec = &cur_msg_vec[retval];
+			cur_vlen -= retval;
+		} else if (retval == cur_vlen) {
+			break;
+		}
 
-        int poll_ret = poll(&pfd, 1, -1);
-        if (poll_ret < 0 && errno != EINTR) {
-            log_fatal("send", "poll() err %s %d %d", strerror(errno), errno, poll_ret);
-	    }
-    }
+		int poll_ret = poll(&pfd, 1, -1);
+		if (poll_ret < 0 && errno != EINTR) {
+			log_fatal("send", "poll() err %s %d %d",
+				  strerror(errno), errno, poll_ret);
+		}
+	}
 
-    return 1;
+	return 1;
 }
 
 #endif /* ZMAP_SEND_LINUX_H */
