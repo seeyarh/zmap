@@ -180,6 +180,14 @@ int zmq_module_process(fieldset_t *fs)
 int zmq_module_close(UNUSED struct state_conf *c, UNUSED struct state_send *s,
 		     UNUSED struct state_recv *r)
 {
+    int rc;
+    char end[2] = "\0";
+	rc = zmq_send(zmq_push, &end, 1, 0);
+	if (rc < 0) {
+		log_fatal("zmq", "failed to send %s, err: %s", output_buffer,
+			  zmq_strerror(errno));
+		return EXIT_FAILURE;
+	}
 	zmq_close(zmq_push);
 	zmq_ctx_destroy(zmq_ctx);
 	return EXIT_SUCCESS;
