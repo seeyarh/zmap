@@ -802,6 +802,10 @@ int main(int argc, char *argv[])
 	if (args.batch_given) {
 		zconf.batch = args.batch_arg;
 	}
+
+	if (args.sendmmsg_batch_given) {
+		zconf.sendmmsg_batch = args.sendmmsg_batch_arg;
+	}
 	if (args.max_targets_given) {
 		zconf.max_targets = parse_max_hosts(args.max_targets_arg);
 	}

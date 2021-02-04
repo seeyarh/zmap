@@ -11,6 +11,7 @@ option(WITH_WERROR "Build with -Werror" OFF)
 option(WITH_PFRING "Build with PF_RING ZC for send (10 GigE)" OFF)
 option(FORCE_CONF_INSTALL "Overwrites existing configuration files at install" OFF)
 
+
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(USING_CLANG "YES")
 else()
@@ -35,6 +36,7 @@ set(GCCWARNINGS
     "-Wnested-externs -Wbad-function-cast -Winit-self"
     "-Wmissing-noreturn"
     "-Wstack-protector"
+    "-fno-omit-frame-pointer"
 )
 
 # Fix line breaks

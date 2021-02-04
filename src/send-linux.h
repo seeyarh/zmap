@@ -47,6 +47,7 @@ int send_run_init(sock_t s)
 		perror("SIOCGIFINDEX");
 		return EXIT_FAILURE;
 	}
+
 	int ifindex = if_idx.ifr_ifindex;
 
 	// destination address for the socket
@@ -57,6 +58,20 @@ int send_run_init(sock_t s)
 		sockaddr.sll_protocol = htons(ETHERTYPE_IP);
 	}
 	memcpy(sockaddr.sll_addr, zconf.gw_mac, ETH_ALEN);
+
+    struct sockaddr_ll sll;
+    struct ifreq    buffer;
+
+    // Setup sockaddr_ll sll
+    memset( (void*) &sll, 0, sizeof(sll) );
+    sll.sll_family = AF_PACKET;
+    sll.sll_ifindex = ifindex;
+    sll.sll_halen = ETH_ALEN;
+
+    if(bind ( sock, (struct sockaddr *) &sll, sizeof (sll) ) ) {
+        log_fatal("socket" "bind() %s", strerror(errno));
+     }
+
 	return EXIT_SUCCESS;
 }
 
