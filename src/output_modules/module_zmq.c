@@ -164,8 +164,6 @@ int zmq_module_process(fieldset_t *fs)
 {
 	size_t reqd_space = guess_csv_string_length(fs);
 	make_csv_string(fs, output_buffer, reqd_space);
-	log_debug("zmq", "sending %s of size %d", output_buffer,
-		  strlen(output_buffer));
 	int rc = zmq_send(zmq_push, output_buffer, strlen(output_buffer), 0);
 	if (rc < 0) {
 		log_fatal("zmq", "failed to send %s, err: %s", output_buffer,
