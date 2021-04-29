@@ -136,6 +136,12 @@ struct state_conf {
 		pfring_zc_buffer_pool *prefetches;
 	} pf;
 #endif
+#ifdef XDP
+	struct {
+        void* xsk;
+    } xdp;
+#endif
+
 };
 extern struct state_conf zconf;
 

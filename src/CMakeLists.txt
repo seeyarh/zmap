@@ -123,6 +123,9 @@ set(ZTEESOURCES
 if(WITH_PFRING)
     set(SOURCES ${SOURCES} socket-pfring.c)
     set(ZTESTSOURCES ${ZTESTSOURCES} socket-pfring.c)
+elseif (WITH_XDP)
+    set(SOURCES ${SOURCES} socket-xdp.c)
+    set(ZTESTSOURCES ${ZTESTSOURCES} socket-xdp.c)
 elseif (APPLE OR BSD)
     set(SOURCES ${SOURCES} socket-bsd.c)
     set(ZTESTSOURCES ${ZTESTSOURCES} socket-bsd.c)
@@ -135,6 +138,9 @@ endif()
 if(WITH_PFRING)
     set(SOURCES ${SOURCES} recv-pfring.c)
     set(ZTESTSOURCES ${ZTESTSOURCES} recv-pfring.c)
+elseif(WITH_XDP)
+    set(SOURCES ${SOURCES} recv-xdp.c)
+    set(ZTESTSOURCES ${ZTESTSOURCES} recv-xdp.c)
 else()
     set(SOURCES ${SOURCES} recv-pcap.c)
     set(ZTESTSOURCES ${ZTESTSOURCES} recv-pcap.c)
@@ -221,6 +227,7 @@ target_link_libraries(
     zmap
     zmaplib
     ${PFRING_LIBRARIES}
+    ${XDP_LIBRARIES}
     pcap gmp m unistring
     ${DNET_LIBRARIES}
     ${REDIS_LIBS}
@@ -250,6 +257,7 @@ target_link_libraries(
     ztests
     zmaplib
     ${PFRING_LIBRARIES}
+    ${XDP_LIBRARIES}
     pcap gmp m unistring
     ${DNET_LIBRARIES}
     ${REDIS_LIBS}
