@@ -27,6 +27,7 @@ void recv_init()
 	log_info("recv-xdp", "creating new af_xdp socket on interface %s", zconf.iface);
     if(zconf.xdp.xsk == NULL)
         zconf.xdp.xsk = xsk_new(zconf.iface);
+	zconf.data_link_size = sizeof(struct ether_header);
 }
 
 void recv_cleanup()
