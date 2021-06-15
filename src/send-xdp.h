@@ -24,7 +24,6 @@ int send_run_init(sock_t s)
 
 int send_packet(sock_t sock, void *buf, int len, UNUSED uint32_t idx)
 {
-	log_info("send-xdp", "sending packet over af_xdp");
     xsk_send(zconf.xdp.xsk, buf, len);
     return 0;
 }

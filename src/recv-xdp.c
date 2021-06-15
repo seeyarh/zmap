@@ -19,8 +19,10 @@
 #include <unistd.h>
 
 void* xsk_recv();
+void* xsk_delete();
 
 #define MAX_PKT_SIZE 1500
+uint8_t pkt_buf[MAX_PKT_SIZE] = {0};
 
 void recv_init()
 {
@@ -32,14 +34,14 @@ void recv_init()
 
 void recv_cleanup()
 {
+    xsk_delete(zconf.xdp.xsk);
 }
 
 void recv_packets()
 {
-	log_info("recv-xdp", "receiving packet");
-    size_t len = 1500;
-    char pkt_buf[MAX_PKT_SIZE] = {0};
-    xsk_recv(zconf.xdp.xsk, &pkt_buf, len);
+    size_t len = MAX_PKT_SIZE;
+    memset(&pkt_buf, 0, MAX_PKT_SIZE);
+    xsk_recv(zconf.xdp.xsk, &pkt_buf, &len);
 	struct timespec ts;
 	handle_packet(len, pkt_buf, ts);
 }

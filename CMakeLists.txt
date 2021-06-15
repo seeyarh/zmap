@@ -85,7 +85,7 @@ endif()
 
 if(WITH_XDP)
     add_definitions("-DXDP")
-    set(XDP_LIBRARIES "${CMAKE_CURRENT_BINARY_DIR}/libxsk_rs_ffi.so")
+    set(XDP_LIBRARIES "${CMAKE_CURRENT_BINARY_DIR}/../xdpsock-ffi/target/release/libxdpsock_ffi.so")
 endif()
 
 if(WITH_PFRING)
